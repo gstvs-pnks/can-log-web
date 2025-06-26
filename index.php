@@ -1,4 +1,5 @@
-<?php include 'db_connect.php'; 
+<?php
+include 'db_connect.php';
 
 // Get filter values from GET params, default to empty string (no filter)
 $filter_can_id = isset($_GET['filter_can_id']) ? $_GET['filter_can_id'] : '';
@@ -86,8 +87,8 @@ $pgnNames = $pdo->query("SELECT DISTINCT pgn_name FROM valtra_t214v")->fetchAll(
                     <select name="filter_can_id" onchange="document.getElementById('filterForm').submit()">
                         <option value="all">All</option>
                         <?php foreach ($canIds as $canIdOption): ?>
-                            <option value="<?=htmlspecialchars($canIdOption)?>" <?= ($filter_can_id === $canIdOption) ? 'selected' : '' ?>>
-                                <?=htmlspecialchars($canIdOption)?>
+                            <option value="<?= htmlspecialchars($canIdOption) ?>" <?= ($filter_can_id === $canIdOption) ? 'selected' : '' ?>>
+                                <?= htmlspecialchars($canIdOption) ?>
                             </option>
                         <?php endforeach; ?>
                     </select>
@@ -106,8 +107,8 @@ $pgnNames = $pdo->query("SELECT DISTINCT pgn_name FROM valtra_t214v")->fetchAll(
                     <select name="filter_pgn_name" onchange="document.getElementById('filterForm').submit()">
                         <option value="all">All</option>
                         <?php foreach ($pgnNames as $pgnNameOption): ?>
-                            <option value="<?=htmlspecialchars($pgnNameOption)?>" <?= ($filter_pgn_name === $pgnNameOption) ? 'selected' : '' ?>>
-                                <?=htmlspecialchars($pgnNameOption)?>
+                            <option value="<?= htmlspecialchars($pgnNameOption) ?>" <?= ($filter_pgn_name === $pgnNameOption) ? 'selected' : '' ?>>
+                                <?= htmlspecialchars($pgnNameOption) ?>
                             </option>
                         <?php endforeach; ?>
                     </select>
@@ -115,19 +116,19 @@ $pgnNames = $pdo->query("SELECT DISTINCT pgn_name FROM valtra_t214v")->fetchAll(
             </tr>
             <?php while ($row = $stmt->fetch()): ?>
             <tr>
-                <td><?=htmlspecialchars($row['id'])?></td>
-                <td><?=htmlspecialchars($row['can_bus'])?></td>
-                <td><?=htmlspecialchars($row['can_id'])?></td>
-                <td><?=htmlspecialchars($row['b1'])?></td>
-                <td><?=htmlspecialchars($row['b2'])?></td>
-                <td><?=htmlspecialchars($row['b3'])?></td>
-                <td><?=htmlspecialchars($row['b4'])?></td>
-                <td><?=htmlspecialchars($row['b5'])?></td>
-                <td><?=htmlspecialchars($row['b6'])?></td>
-                <td><?=htmlspecialchars($row['b7'])?></td>
-                <td><?=htmlspecialchars($row['b8'])?></td>
-                <td><?=htmlspecialchars($row['pgn'])?></td>
-                <td><?=htmlspecialchars($row['pgn_name'])?></td>
+                <td><?= htmlspecialchars($row['id']) ?></td>
+                <td><?= htmlspecialchars($row['can_bus']) ?></td>
+                <td><?= htmlspecialchars($row['can_id']) ?></td>
+                <td><?= htmlspecialchars($row['b1']) ?></td>
+                <td><?= htmlspecialchars($row['b2']) ?></td>
+                <td><?= htmlspecialchars($row['b3']) ?></td>
+                <td><?= htmlspecialchars($row['b4']) ?></td>
+                <td><?= htmlspecialchars($row['b5']) ?></td>
+                <td><?= htmlspecialchars($row['b6']) ?></td>
+                <td><?= htmlspecialchars($row['b7']) ?></td>
+                <td><?= htmlspecialchars($row['b8']) ?></td>
+                <td><?= htmlspecialchars($row['pgn']) ?></td>
+                <td><?= htmlspecialchars($row['pgn_name']) ?></td>
             </tr>
             <?php endwhile; ?>
         </table>
