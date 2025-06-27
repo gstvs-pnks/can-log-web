@@ -9,7 +9,7 @@ $tables = $pdo->query($sql)->fetchAll(PDO::FETCH_COLUMN);
 $makes = [];
 $modelsPerMake = [];
 foreach ($tables as $table) {
-    if (preg_match('/^([a-z]+)_([a-z0-9]+)$/', $table, $matches)) {
+    if (preg_match('/^([a-zA-Z]+)_([a-zA-Z0-9]+)$/', $table, $matches)) {
         $make = $matches[1];
         $model = $matches[2];
         $makes[$make] = true;
