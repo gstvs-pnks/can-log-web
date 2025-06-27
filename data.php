@@ -10,6 +10,7 @@ $makes = [];
 $modelsPerMake = [];
 foreach ($tables as $table) {
     if (preg_match('/^([a-zA-Z]+)_([a-zA-Z0-9]+)$/', $table, $matches)) {
+        // Preserve case exactly as in table name
         $make = $matches[1];
         $model = $matches[2];
         $makes[$make] = true;
@@ -20,18 +21,55 @@ $makes = array_keys($makes);
 sort($makes);
 
 // Get selected make and model from GET, or use defaults
-$selected_make = isset($_GET['make']) ? strtolower($_GET['make']) : (count($makes) > 0 ? $makes[0] : '');
-$selected_model = isset($_GET['model']) ? strtolower($_GET['model']) : (
-    isset($modelsPerMake[$selected_make]) ? $modelsPerMake[$selected_make][0] : ''
-);
+// Use original case from available makes/models, but match ignoring case from GET params
+$selected_make = '';
+$selected_model = '';
 
-// Compose table name
+// Normalize GET params to lowercase for matching
+$get_make = isset($_GET['make']) ? strtolower($_GET['make']) : '';
+$get_model = isset($_GET['model']) ? strtolower($_GET['model']) : '';
+
+// Find make matching GET param case-insensitively, or default to first
+foreach ($makes as $make) {
+    if (strtolower($make) === $get_make) {
+        $selected_make = $make;
+        break;
+    }
+}
+if ($selected_make === '') {
+    $selected_make = count($makes) > 0 ? $makes[0] : '';
+}
+
+// Find model matching GET param case-insensitively, or default to first model of selected make
+if (isset($modelsPerMake[$selected_make])) {
+    foreach ($modelsPerMake[$selected_make] as $model) {
+        if (strtolower($model) === $get_model) {
+            $selected_model = $model;
+            break;
+        }
+    }
+    if ($selected_model === '') {
+        $selected_model = $modelsPerMake[$selected_make][0];
+    }
+} else {
+    $selected_model = '';
+}
+
+// Compose table name preserving case
 $table_name = $selected_make . '_' . $selected_model;
 
-// Validate that table exists
-if (!in_array($table_name, $tables)) {
-    $table_name = count($tables) > 0 ? $tables[0] : '';
+// Validate that table exists (case-insensitive)
+$found_table = null;
+foreach ($tables as $tbl) {
+    if (strcasecmp($tbl, $table_name) === 0) {
+        $found_table = $tbl;
+        break;
+    }
 }
+if ($found_table === null) {
+    $found_table = count($tables) > 0 ? $tables[0] : '';
+}
+$table_name = $found_table;
 
 // Filters for can_id and pgn_name
 $filter_can_id = isset($_GET['filter_can_id']) ? $_GET['filter_can_id'] : '';
