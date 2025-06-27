@@ -100,19 +100,20 @@ function makeDisplayName($make, $mapping) {
             </select>
 
             <label for="modelSelect">Choose model:</label>
-            <select id="modelSelect" name="model" onchange="document.getElementById('filterForm').submit()">
-                <?php
-                if (isset($modelsPerMake[$selected_make])):
-                    foreach ($modelsPerMake[$selected_make] as $modelOption):
-                ?>
-                    <option value="<?= htmlspecialchars($modelOption) ?>" <?= ($selected_model === $modelOption) ? 'selected' : '' ?>>
-                        <?= htmlspecialchars($modelOption) ?>
-                    </option>
-                <?php
-                    endforeach;
-                endif;
-                ?>
-            </select>
+				<select id="modelSelect" name="model" onchange="document.getElementById('filterForm').submit()">
+				<?php
+					if (isset($modelsPerMake[$selected_make])):
+					foreach ($modelsPerMake[$selected_make] as $modelOption):
+				?>
+				
+					<option value="<?= htmlspecialchars($modelOption) ?>" <?= ($selected_model === $modelOption) ? 'selected' : '' ?>>
+						<?= htmlspecialchars(makeDisplayName($modelOption, $makeDisplayNames)) ?>
+					</option>
+				<?php
+				endforeach;
+				endif;
+				?>
+</select>
         </div>
 
         <table>
