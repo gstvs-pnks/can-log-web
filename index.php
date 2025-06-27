@@ -10,6 +10,7 @@ $makeDisplayNames = [
     'johnDeere' => 'John Deere',
     'valtra' => 'Valtra',
 	't214v' => 'T214V',
+	'Puma260afs' => 'Puma 260 AFS',
 ];
 
 // Function to get friendly make name
