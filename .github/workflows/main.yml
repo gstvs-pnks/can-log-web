@@ -18,13 +18,7 @@ jobs:
       with:
         host: 100.94.178.65
         username: gstvs-pnks
-        key: -----BEGIN OPENSSH PRIVATE KEY-----
-b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW
-QyNTUxOQAAACBT/f+TYYpKyily7peoujK7aPXfxVp9d0ZaDJ3lQPYb5wAAAJi6W6Sxuluk
-sQAAAAtzc2gtZWQyNTUxOQAAACBT/f+TYYpKyily7peoujK7aPXfxVp9d0ZaDJ3lQPYb5w
-AAAEBpGr9WrEoCAtNoiaaKSDWlN37X3MYAUA/C9GupdIvEdFP9/5NhikrKKXLul6i6Mrto
-9d/FWn13RloMneVA9hvnAAAAFWdpdGh1Yi1hY3Rpb25zLWRlcGxveQ==
------END OPENSSH PRIVATE KEY-----
+        key: ${{ secrets.SERVER_SSH_KEY }}
         port: 2222
 
         script: |
