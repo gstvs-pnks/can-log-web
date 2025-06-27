@@ -1,13 +1,12 @@
 <?php
 include 'db_connect.php';
 
-// ✅ Get all table names
+// ✅ Fetch all table names
 $tables = $pdo->query("SHOW TABLES")->fetchAll(PDO::FETCH_COLUMN);
 
-// ✅ Parse makes and models from table names
+// ✅ Parse makes and models
 $makes = [];
-$models = [];
-$tableMap = [];
+$modelsPerMake = [];
 
 foreach ($tables as $table) {
     if (preg_match('/^([a-zA-Z]+)_([a-zA-Z0-9]+)$/', $table, $matches)) {
@@ -15,27 +14,32 @@ foreach ($tables as $table) {
         $model = strtolower($matches[2]);
 
         $makes[$make] = $make;
-        $models[$model] = $model;
-        $tableMap["{$make}_{$model}"] = $table;
+        $modelsPerMake[$make][] = $model;
     }
 }
 
-// ✅ Get selected make and model (with fallback)
+// ✅ Get selected make/model (default to first available)
 $selected_make = isset($_GET['make']) ? strtolower($_GET['make']) : array_key_first($makes);
-$selected_model = isset($_GET['model']) ? strtolower($_GET['model']) : array_key_first($models);
+$available_models = $modelsPerMake[$selected_make] ?? [];
+$selected_model = isset($_GET['model']) ? strtolower($_GET['model']) : ($available_models[0] ?? null);
 
-// ✅ Build table name
+// ✅ Verify table exists
 $selected_table = "{$selected_make}_{$selected_model}";
 
 if (!in_array($selected_table, $tables)) {
     die("Invalid table selection.");
 }
 
-// ✅ Filters for columns
+// ✅ Handle filters
 $filter_can_id = $_GET['filter_can_id'] ?? '';
 $filter_pgn_name = $_GET['filter_pgn_name'] ?? '';
 
-// ✅ Main data query
+// ✅ Pagination
+$page = max(1, intval($_GET['page'] ?? 1));
+$limit = 10;
+$offset = ($page - 1) * $limit;
+
+// ✅ Query data
 $sql = "SELECT * FROM `$selected_table` WHERE 1=1";
 $params = [];
 
@@ -48,11 +52,4 @@ if ($filter_pgn_name !== '' && $filter_pgn_name !== 'all') {
     $params[] = $filter_pgn_name;
 }
 
-$sql .= " LIMIT 10";
-$stmt = $pdo->prepare($sql);
-$stmt->execute($params);
-
-// ✅ Populate dropdowns for can_id and pgn_name
-$canIds = $pdo->query("SELECT DISTINCT can_id FROM `$selected_table`")->fetchAll(PDO::FETCH_COLUMN);
-$pgnNames = $pdo->query("SELECT DISTINCT pgn_name FROM `$selected_table`")->fetchAll(PDO::FETCH_COLUMN);
-?>
+$sql .= " LIMIT $limit OFFSET

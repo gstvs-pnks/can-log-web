@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
+    <meta charset="UTF-8">
     <title>CAN-LOG Database</title>
     <style>
         body {
@@ -16,6 +16,49 @@
             text-align: center;
             color: #2c3e50;
         }
+        .filter-container {
+            width: 90%;
+            margin: 0 auto 20px auto;
+            background-color: #2980b9;
+            padding: 15px;
+            border-radius: 8px;
+            color: white;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .filter-box {
+            display: flex;
+            flex-direction: column;
+            min-width: 150px;
+        }
+        .filter-box label {
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .filter-box select {
+            padding: 5px;
+            font-size: 1em;
+        }
+        .filter-actions {
+            display: flex;
+            align-items: flex-end;
+            gap: 10px;
+        }
+        .filter-actions button {
+            padding: 6px 12px;
+            background-color: white;
+            border: none;
+            border-radius: 4px;
+            color: #2980b9;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .filter-actions button:hover {
+            background-color: #ecf0f1;
+        }
         table {
             width: 90%;
             margin: 0 auto;
@@ -24,108 +67,50 @@
             box-shadow: 0 4px 8px rgba(0,0,0,0.05);
         }
         th, td {
-            padding: 12px 15px;
+            padding: 10px 12px;
             text-align: center;
             border-bottom: 1px solid #e0e0e0;
         }
         th {
             background-color: #2980b9;
             color: white;
-            position: relative;
         }
         tr:hover {
             background-color: #f1f9ff;
         }
-        select {
-            margin: 5px;
-            padding: 5px;
-            font-size: 1em;
+        .pagination {
+            width: 90%;
+            margin: 15px auto;
+            text-align: center;
+        }
+        .pagination button {
+            padding: 6px 12px;
+            margin: 0 5px;
+            background-color: #2980b9;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .pagination button:disabled {
+            background-color: #bdc3c7;
+            cursor: not-allowed;
         }
     </style>
-</head>
-<body>
+    <script>
+        function resetFilters() {
+            const form = document.getElementById('filterForm');
+            form.reset();
+            window.location = window.location.pathname;
+        }
+        function updateModelDropdown() {
+            const make = document.getElementById('make').value;
+            const models = <?= json_encode($modelsPerMake) ?>;
+            const modelSelect = document.getElementById('model');
+            modelSelect.innerHTML = "";
 
-    <h1>CAN-LOG Database Records</h1>
-
-    <!-- 🔥 Make & Model Dropdowns -->
-    <form method="GET" id="filterForm">
-        <label for="make">Choose Make:</label>
-        <select name="make" id="make" onchange="document.getElementById('filterForm').submit()">
-            <?php foreach ($makes as $make): ?>
-                <option value="<?= htmlspecialchars($make) ?>" <?= ($selected_make === $make) ? 'selected' : '' ?>>
-                    <?= ucfirst($make) ?>
-                </option>
-            <?php endforeach; ?>
-        </select>
-
-        <label for="model">Choose Model:</label>
-        <select name="model" id="model" onchange="document.getElementById('filterForm').submit()">
-            <?php foreach ($models as $model): ?>
-                <option value="<?= htmlspecialchars($model) ?>" <?= ($selected_model === $model) ? 'selected' : '' ?>>
-                    <?= strtoupper($model) ?>
-                </option>
-            <?php endforeach; ?>
-        </select>
-
-        <!-- Existing CAN ID and PGN Name filters -->
-        <table>
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Can Bus</th>
-                    <th>
-                        Can ID<br />
-                        <select name="filter_can_id" onchange="document.getElementById('filterForm').submit()">
-                            <option value="all">All</option>
-                            <?php foreach ($canIds as $canIdOption): ?>
-                                <option value="<?= htmlspecialchars($canIdOption) ?>" <?= ($filter_can_id === $canIdOption) ? 'selected' : '' ?>>
-                                    <?= htmlspecialchars($canIdOption) ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
-                    </th>
-                    <th>B1</th>
-                    <th>B2</th>
-                    <th>B3</th>
-                    <th>B4</th>
-                    <th>B5</th>
-                    <th>B6</th>
-                    <th>B7</th>
-                    <th>B8</th>
-                    <th>PGN</th>
-                    <th>
-                        PGN Name<br />
-                        <select name="filter_pgn_name" onchange="document.getElementById('filterForm').submit()">
-                            <option value="all">All</option>
-                            <?php foreach ($pgnNames as $pgnNameOption): ?>
-                                <option value="<?= htmlspecialchars($pgnNameOption) ?>" <?= ($filter_pgn_name === $pgnNameOption) ? 'selected' : '' ?>>
-                                    <?= htmlspecialchars($pgnNameOption) ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php while ($row = $stmt->fetch()): ?>
-                <tr>
-                    <td><?= htmlspecialchars($row['id']) ?></td>
-                    <td><?= htmlspecialchars($row['can_bus']) ?></td>
-                    <td><?= htmlspecialchars($row['can_id']) ?></td>
-                    <td><?= htmlspecialchars($row['b1']) ?></td>
-                    <td><?= htmlspecialchars($row['b2']) ?></td>
-                    <td><?= htmlspecialchars($row['b3']) ?></td>
-                    <td><?= htmlspecialchars($row['b4']) ?></td>
-                    <td><?= htmlspecialchars($row['b5']) ?></td>
-                    <td><?= htmlspecialchars($row['b6']) ?></td>
-                    <td><?= htmlspecialchars($row['b7']) ?></td>
-                    <td><?= htmlspecialchars($row['b8']) ?></td>
-                    <td><?= htmlspecialchars($row['pgn']) ?></td>
-                    <td><?= htmlspecialchars($row['pgn_name']) ?></td>
-                </tr>
-                <?php endwhile; ?>
-            </tbody>
-        </table>
-    </form>
-</body>
-</html>
+            if (models[make]) {
+                models[make].forEach(model => {
+                    const option = document.createElement("option");
+                    option.value = model;
+                    option.text = model.toUpperCase();
