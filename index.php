@@ -4,6 +4,22 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 include 'data.php';
+
+// Mapping from make keys to friendly display names
+$makeDisplayNames = [
+    'johnDeere' => 'John Deere',
+    'valtra' => 'Valtra',
+];
+
+// Function to get friendly make name
+function makeDisplayName($make, $mapping) {
+    if (isset($mapping[$make])) {
+        return $mapping[$make];
+    }
+    // Fallback: insert space before uppercase letters and ucfirst
+    $readable = preg_replace('/([a-z])([A-Z])/', '$1 $2', $make);
+    return ucfirst($readable);
+}
 ?>
 
 <!DOCTYPE html>
@@ -77,7 +93,7 @@ include 'data.php';
             <select id="makeSelect" name="make" onchange="document.getElementById('filterForm').submit()">
                 <?php foreach ($makes as $makeOption): ?>
                     <option value="<?= htmlspecialchars($makeOption) ?>" <?= ($selected_make === $makeOption) ? 'selected' : '' ?>>
-                        <?= ucfirst(htmlspecialchars($makeOption)) ?>
+                        <?= htmlspecialchars(makeDisplayName($makeOption, $makeDisplayNames)) ?>
                     </option>
                 <?php endforeach; ?>
             </select>
