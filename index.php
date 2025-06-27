@@ -9,6 +9,7 @@ include 'data.php';
 $makeDisplayNames = [
     'johnDeere' => 'John Deere',
     'valtra' => 'Valtra',
+	't214v' => 'T214V',
 ];
 
 // Function to get friendly make name
