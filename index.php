@@ -1,10 +1,4 @@
-<?php
-
-include 'data.php';
-
-?>
-
-
+<?php include 'data.php'; ?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -33,7 +27,6 @@ include 'data.php';
             padding: 12px 15px;
             text-align: center;
             border-bottom: 1px solid #e0e0e0;
-            vertical-align: middle;
         }
         th {
             background-color: #2980b9;
@@ -44,17 +37,37 @@ include 'data.php';
             background-color: #f1f9ff;
         }
         select {
-            margin-top: 5px;
-            width: 90%;
-            padding: 2px 4px;
-            font-size: 0.9em;
+            margin: 5px;
+            padding: 5px;
+            font-size: 1em;
         }
     </style>
 </head>
 <body>
+
     <h1>CAN-LOG Database Records</h1>
-    
+
+    <!-- 🔥 Make & Model Dropdowns -->
     <form method="GET" id="filterForm">
+        <label for="make">Choose Make:</label>
+        <select name="make" id="make" onchange="document.getElementById('filterForm').submit()">
+            <?php foreach ($makes as $make): ?>
+                <option value="<?= htmlspecialchars($make) ?>" <?= ($selected_make === $make) ? 'selected' : '' ?>>
+                    <?= ucfirst($make) ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
+
+        <label for="model">Choose Model:</label>
+        <select name="model" id="model" onchange="document.getElementById('filterForm').submit()">
+            <?php foreach ($models as $model): ?>
+                <option value="<?= htmlspecialchars($model) ?>" <?= ($selected_model === $model) ? 'selected' : '' ?>>
+                    <?= strtoupper($model) ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
+
+        <!-- Existing CAN ID and PGN Name filters -->
         <table>
             <thead>
                 <tr>
