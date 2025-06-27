@@ -1,43 +1,10 @@
 <?php
-// Start PHP section
 
-// Enable error reporting for debugging (remove in production)
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
-// Include your database connection - make sure this file returns a $pdo PDO object
-include 'db_connect.php';
-
-// Retrieve filters from GET parameters (if any)
-$filter_can_id = isset($_GET['filter_can_id']) ? $_GET['filter_can_id'] : '';
-$filter_pgn_name = isset($_GET['filter_pgn_name']) ? $_GET['filter_pgn_name'] : '';
-
-// Build SQL query dynamically with filtering conditions
-$sql = "SELECT * FROM valtra_t214v WHERE 1=1";
-$params = [];
-
-if ($filter_can_id !== '' && $filter_can_id !== 'all') {
-    $sql .= " AND can_id = ?";
-    $params[] = $filter_can_id;
-}
-
-if ($filter_pgn_name !== '' && $filter_pgn_name !== 'all') {
-    $sql .= " AND pgn_name = ?";
-    $params[] = $filter_pgn_name;
-}
-
-$sql .= " LIMIT 5";
-
-// Prepare and execute the query safely
-$stmt = $pdo->prepare($sql);
-$stmt->execute($params);
-
-// Fetch distinct values for dropdowns (no filtering here, show all options)
-$canIds = $pdo->query("SELECT DISTINCT can_id FROM valtra_t214v")->fetchAll(PDO::FETCH_COLUMN);
-$pgnNames = $pdo->query("SELECT DISTINCT pgn_name FROM valtra_t214v")->fetchAll(PDO::FETCH_COLUMN);
+include 'data.php';
 
 ?>
+
+
 
 <!DOCTYPE html>
 <html lang="en">
